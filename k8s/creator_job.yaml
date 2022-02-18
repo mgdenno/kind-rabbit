@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: creator-job
+spec:
+  template:
+    spec:
+      containers:
+        - env:
+            - name: RABBITMQ_DEFAULT_PASS
+              value: queue
+            - name: RABBITMQ_DEFAULT_USER
+              value: admin
+          image: localhost:5001/creator
+          name: creator
+          ports:
+            - containerPort: 8888
+          resources: {}
+      restartPolicy: Never
+  backoffLimit: 4

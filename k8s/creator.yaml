@@ -53,5 +53,5 @@ spec:
           ports:
             - containerPort: 8888
           resources: {}
-      restartPolicy: Always
+      restartPolicy: Never
 status: {}
