@@ -2,19 +2,45 @@ import datetime
 import pytz
 from kubernetes import client, config
 
+import argparse
+
+def init_argparse() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        usage="%(prog)s [OPTION] [FILE]...",
+        description="Creates and destroys"
+    )
+    parser.add_argument(
+        "--version", action="version",
+        version = f"{parser.prog} version 0.1.0"
+    )
+    parser.add_argument(
+        "--create", help="Create deployment", action='store_true'
+    )
+    parser.add_argument(
+        "--delete", help="Delete deployment", action='store_true'
+    )
+    parser.add_argument(
+        "--update", help="Update deployment", action='store_true'
+    )
+    parser.add_argument(
+        "--restart", help="Restart deployment", action='store_true'
+    )
+    return parser
+
 DEPLOYMENT_NAME = "worker-deployment"
 
 
 def create_deployment_object():
-    # Configureate Pod template container
+    # Configure Pod template container
+    # You can create multiple containers and add to pod spec.
     container = client.V1Container(
         name="worker",
-        image="kind-registry:5001/worker",
+        image="localhost:5001/worker",
         ports=[client.V1ContainerPort(container_port=80)],
-        resources=client.V1ResourceRequirements(
-            requests={"cpu": "100m", "memory": "200Mi"},
-            limits={"cpu": "500m", "memory": "500Mi"},
-        ),
+        # resources=client.V1ResourceRequirements(
+        #     requests={"cpu": "100m", "memory": "200Mi"},
+        #     limits={"cpu": "500m", "memory": "500Mi"},
+        # ),
     )
 
     # Create and configure a spec section
@@ -44,7 +70,7 @@ def create_deployment_object():
 
 
 def create_deployment(api, deployment):
-    # Create deployement
+    # Create deployment
     resp = api.create_namespaced_deployment(
         body=deployment, namespace="default"
     )
@@ -123,6 +149,8 @@ def delete_deployment(api):
 
 
 def main():
+    parser = init_argparse()
+    args = parser.parse_args()
     # Configs can be set in Configuration class directly or using helper
     # utility. If no argument provided, the config will be loaded from
     # default location.
@@ -134,18 +162,21 @@ def main():
     # c.debug = True
     # apps_v1 = client.AppsV1Api(api_client=client.ApiClient(configuration=c))
 
-    # Create a deployment object with client-python API. The deployment we
-    # created is same as the `nginx-deployment.yaml` in the /examples folder.
+    # Create a deployment object with client-python API.
 
     deployment = create_deployment_object()
+    if args.delete:
+        delete_deployment(apps_v1)
 
-    # create_deployment(apps_v1, deployment)
+    if args.create:
+        create_deployment(apps_v1, deployment)
+    
+    if args.update:
+        update_deployment(apps_v1, deployment)
 
-    update_deployment(apps_v1, deployment)
+    if args.restart:
+        restart_deployment(apps_v1, deployment)
 
-    restart_deployment(apps_v1, deployment)
-
-    # delete_deployment(apps_v1)
 
 
 if __name__ == "__main__":
