@@ -55,15 +55,15 @@ Now that the containers we need to use are in the registry, we can apply the con
 ```bash
 kubectl apply -f k8s/rabbit.yaml
 ```
-You should see a rabbit pod running in the cluster now in `k9s`.  Next, apply the `creator_job.yaml` file.  This will create a a bunch of sample jobs and add them to the queue.
+You should see a rabbit pod running in the cluster now in `k9s`.  Next, apply the `creator_job.yaml` file.  This will create a bunch of sample jobs and add them to the queue.
 ```bash
 kubectl apply -f k8s/creator_job.yaml
 ```
-Now, in `k9s` if you select the `creator-job-xxx` pod and hit "l" it will show you the logs which indicate the jobs were added to the queue.  They will just sit there until a worker takes them and acts on them.
+Now, in `k9s` if you select the `creator-job-xxx` pod and hit `l` it will show you the logs which indicate the jobs were added to the queue.  They will just sit there until a worker takes them and acts on them.
 
 In `k9s` you can also forward the RabbitMQ port to the localhost (shift-f) and see the queue via the web http://localhost:15672/, user: admin, password: queue
 
-Lastly, as far as adding jobs to the queue is concerned, you can also port forward port 5672 to localhost and add jobs to the queue by running the creator/creator.py script locally.  You just need to change the rabbit host from rabbit-queue to localhost, as noted in the file.
+Lastly, as far as adding jobs to the queue is concerned, you can also port forward port 5672 to localhost and add jobs to the queue by running the `creator/creator.py` script locally.  You just need to change the rabbit host from `rabbit-queue` to `localhost`, as noted in the file.
 
 Now we need to create worker deployments to do the work (of "running the model", which in this case is really just waiting a random amount of time.)
 
@@ -73,7 +73,7 @@ pipenv install
 pipenv shell
 ```
 
-Once installed you can run the create_worker_deployments.py script to create worker pods, that will take jobs from the queue, execute them, and acknowledge that they are done. The script takes some command line arguments to create, delete, update and restart the deployment of worker pods.
+Once installed you can run the `create_worker_deployments.py` script to create worker pods, that will take jobs from the queue, execute them, and acknowledge that they are done. The script takes some command line arguments to create, delete, update and restart the deployment of worker pods.
 
 To create the deployments:
 ```bash
