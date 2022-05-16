@@ -11,7 +11,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=queue
   worker1:
     build: worker
-    image: localhost:5001/worker
+    image: localhost:5000/worker
     container_name: worker1
     depends_on:
         - queue
@@ -23,7 +23,7 @@ services:
   creator:
       build: creator
       container_name: creator
-      image: localhost:5001/creator
+      image: localhost:5000/creator
       depends_on:
         - queue
         - worker1
