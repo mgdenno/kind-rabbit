@@ -62,7 +62,10 @@ while(True):
     print("starting creator")
     try:
         print("trying to creator messages")
+        # If running in the cluster, host=rabbit-queue, if running locally with port 5672 forwarded to localhost, 
+        # then host=localhost
         params = pika.ConnectionParameters(host='rabbit-queue', port=5672, credentials=credentials)
+        # params = pika.ConnectionParameters(host='localhost', port=5672, credentials=credentials)
         connection = pika.BlockingConnection(params)
         channel = connection.channel()
         send_messages_to_queue()
